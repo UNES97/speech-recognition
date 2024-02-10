@@ -49,6 +49,7 @@
             const startBtn = document.getElementById('startBtn');
             const stopBtn = document.getElementById('stopBtn');
             let recognition;
+            let interimTranscript = '';
 
             function scrollToBottom() {
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -71,23 +72,24 @@
                 };
 
                 recognition.onresult = function (event) {
-                    let interimTranscript = '';
+                    interimTranscript = '';
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
                         if (event.results[i].isFinal) {
                             chatBox.innerHTML += '<div class="userMessage">You: ' + event.results[i][0].transcript + '</div>';
                             processUserMessage(event.results[i][0].transcript);
-                        } 
-                        else {
+                        } else {
                             interimTranscript += event.results[i][0].transcript;
                         }
                     }
-                    chatBox.innerHTML += '<div class="userMessage">You (interim): ' + interimTranscript + '</div>';
                     scrollToBottom();
                 };
 
                 recognition.onend = function () {
                     chatBox.innerHTML += '<div class="userMessage">You: (Recording stopped)</div>';
+                    fullText += interimTranscript; 
+                    chatBox.innerHTML += '<div class="userMessage">You (interim): ' + interimTranscript + '</div>';
                     scrollToBottom();
+                    processUserMessage(fullText);
                     initRecognition();
                 };
             }
