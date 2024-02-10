@@ -49,8 +49,6 @@
             const startBtn = document.getElementById('startBtn');
             const stopBtn = document.getElementById('stopBtn');
             let recognition;
-            let inSpeech = false;
-            let doneRecording = false;
 
             function scrollToBottom() {
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -60,7 +58,7 @@
                 recognition = new webkitSpeechRecognition();
                 recognition.lang = 'ar-MA';
                 recognition.continuous = true;
-                recognition.interimResults = false;
+                recognition.interimResults = true;
 
                 recognition.onstart = function () {
                     chatBox.innerHTML += '<div class="userMessage">You: (Recording started)</div>';
@@ -74,7 +72,6 @@
 
                 recognition.onresult = function (event) {
                     let interimTranscript = '';
-                    inSpeech = true;
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
                         if (event.results[i].isFinal) {
                             chatBox.innerHTML += '<div class="userMessage">You: ' + event.results[i][0].transcript + '</div>';
@@ -84,46 +81,31 @@
                             interimTranscript += event.results[i][0].transcript;
                         }
                     }
-                    inSpeech = false;
                     chatBox.innerHTML += '<div class="userMessage">You (interim): ' + interimTranscript + '</div>';
                     scrollToBottom();
                 };
 
-                recognition.onend = function(event) {
-                    if(!doneRecording) {
-                        recognition.start();
-                    }
-                    else {
-                        chatBox.innerHTML += '<div class="userMessage">You: (Recording stopped)</div>';
-                        scrollToBottom();
-                        initRecognition();
-                    }
-                }
+                recognition.onend = function () {
+                    chatBox.innerHTML += '<div class="userMessage">You: (Recording stopped)</div>';
+                    scrollToBottom();
+                    initRecognition();
+                };
             }
 
             if ('webkitSpeechRecognition' in window) {
                 initRecognition();
 
                 startBtn.addEventListener('click', function () {
-                    doneRecording = false;
                     recognition.start();
                     startBtn.disabled = true;
                     stopBtn.disabled = false;
-                    setInterval(resetVoiceRecog, 10000);
                 });
 
                 stopBtn.addEventListener('click', function () {
-                    doneRecording = true;
                     recognition.stop();
                     startBtn.disabled = false;
                     stopBtn.disabled = true;
                 });
-
-                function resetVoiceRecog() {
-                    if(inSpeech == false){ 
-                        recognition.stop();
-                    }
-                }
             } else {
                 chatBox.innerHTML = '<div class="botMessage">Speech recognition not supported in this Browser.</div>';
             }
