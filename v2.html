@@ -75,7 +75,7 @@
                     interimTranscript = '';
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
                         if (event.results[i].isFinal) {
-                            chatBox.innerHTML += '<div class="userMessage">You: ' + event.results[i][0].transcript + '</div>';
+                            //chatBox.innerHTML += '<div class="userMessage">You: ' + event.results[i][0].transcript + '</div>';
                             processUserMessage(event.results[i][0].transcript);
                         } else {
                             interimTranscript += event.results[i][0].transcript;
@@ -87,7 +87,7 @@
                 recognition.onend = function () {
                     chatBox.innerHTML += '<div class="userMessage">You: (Recording stopped)</div>';
                     fullText += interimTranscript; 
-                    chatBox.innerHTML += '<div class="userMessage">You (interim): ' + interimTranscript + '</div>';
+                    //chatBox.innerHTML += '<div class="userMessage">You (interim): ' + interimTranscript + '</div>';
                     scrollToBottom();
                     processUserMessage(fullText);
                     initRecognition();
