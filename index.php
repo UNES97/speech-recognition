@@ -1,6 +1,7 @@
 <?php
 
-$apiKey = 'AIzaSyB80AA9R22NzBwN3tqbsEM5p2y1WYVuOi4';
+include 'vars.php';
+$apiKey = GOOGLE_API_KEY;
 $audioFile = 'demo-audio.mp3';
 $apiUrl = 'https://speech.googleapis.com/v1/speech:recognize';
 
